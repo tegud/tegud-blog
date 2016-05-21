@@ -53,11 +53,14 @@ config = {
         // #### Database
         // Ghost supports sqlite3 (default), MySQL & PostgreSQL
         database: {
-            client: 'sqlite3',
+            client: 'mysql',
             connection: {
-                filename: path.join(__dirname, '/content/data/ghost-dev.db')
-            },
-            debug: false
+                host     : process.env.MYSQL_HOST,
+                user     : process.env.MYSQL_USERNAME,
+                password : process.env.MYSQL_PASSWORD,
+                database : 'tegud',
+                charset  : 'utf8'
+            }
         },
         // #### Server
         // Can be host & port (default), or socket
