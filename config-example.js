@@ -18,15 +18,15 @@ config = {
                 charset  : 'utf8'
             }
         },
-        storage: {
-          active: 'ghost-s3',
-          'ghost-s3': {
-            accessKeyId: 'AKIAIMEYY42QDUXDQKJQ',
-            secretAccessKey: process.env.AWS_SECRET,
-            bucket: 'tegud-assets',
-            region: 'eu-west-1'
-          }
-        },
+        // storage: {
+        //   active: 'ghost-s3',
+        //   'ghost-s3': {
+        //     accessKeyId: 'AKIAIMEYY42QDUXDQKJQ',
+        //     secretAccessKey: process.env.AWS_SECRET,
+        //     bucket: 'tegud-assets',
+        //     region: 'eu-west-1'
+        //   }
+        // },
         server: {
             host: '0.0.0.0',
             port: '2368'
