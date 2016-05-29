@@ -7,7 +7,16 @@ config = {
     // Configure your URL and mail settings here
     production: {
         url: 'http://ghost.example.com',
-        mail: {},
+        mail: {
+            transport: 'SMTP',
+            options: {
+                service: 'Mailgun',
+                auth: {
+                    user: process.env.EmailUserName, // mailgun username
+                    pass: process.env.EmailPassword  // mailgun password
+                }
+            }
+        },
         database: {
             client: 'mysql',
             connection: {
