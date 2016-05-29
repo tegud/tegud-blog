@@ -2,4 +2,4 @@
 
 console.log('****** CURRENT DIR ******' + __dirname)
 
-module.exports = require('ghost-s3-compat');
+module.exports = require('/usr/src/ghost/node_modules/ghost-s3-compat');
