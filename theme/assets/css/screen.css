@@ -611,6 +611,29 @@ body.nav-opened .nav-cover {
     z-index: 200;
 }
 
+.title-font { text-transform: uppercase }
+
+.nav-bar {
+  height: 80px;
+  background-color: #5B618E;
+  color: #A7B3FF;
+}
+
+.nav-bar h1 { margin-right: 120px; }
+
+.nav-bar-inner { width: 80%; max-width:710px; margin: 0 auto; padding: 12px 0; font-size: 2em; }
+
+.social-buttons { float: right; list-style: none; padding: 10px 0 0 0; margin: 0 }
+
+.social-buttons li { display: inline-block; margin: 0 }
+
+.social-buttons li a { opacity: 0.3; transition: opacity 700ms }
+
+.social-buttons li a:hover { opacity: 1 }
+
+.nav-bar a,
+.nav-bar a h1 { color: #A7B3FF; text-decoration: none; }
+
 .nav {
     position: fixed;
     top: 0;
@@ -1702,9 +1725,11 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .site-footer {
+    width: 80%;
+    max-width: 710px;
     position: relative;
-    margin: 8rem 0 0 0;
-    padding: 1rem 15px;
+    margin: 8rem auto 0 auto;
+    padding: 1rem 0;
     font-family: "Open Sans", sans-serif;
     font-size: 1rem;
     line-height: 1.75em;
@@ -1740,7 +1765,6 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 @media only screen and (max-width: 900px) {
-
     blockquote {
         margin-left: 0;
     }
@@ -1890,6 +1914,13 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 @media only screen and (max-width: 500px) {
+    .nav-bar { height: auto; }
+
+    .nav-bar-inner { width: auto; padding: 8px 16px; }
+
+    .social-buttons { padding: 2px 0 0 0; }
+
+    .site-footer { width: auto; padding: 0 16px; }
 
     .main-header {
         margin-bottom: 15px;
