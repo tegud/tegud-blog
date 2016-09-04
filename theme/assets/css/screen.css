@@ -1918,6 +1918,8 @@ body:not(.post-template) .post-title {
 
     .nav-bar-inner { width: auto; padding: 8px 16px; }
 
+    .nav-bar-inner h1 { padding-top: 4px; }
+
     .social-buttons { padding: 2px 0 0 0; }
 
     .site-footer { width: auto; padding: 0 16px; }

@@ -17,4 +17,4 @@ deployment:
       - docker -v
       - docker push tegud/tegud-blog:${CIRCLE_BUILD_NUM}
       - docker push tegud/tegud-blog:latest
-      - curl -X POST http://cowbell.cowbell.default.tegud.work.:8080/${COWBELL_TOKEN}/redeploy/sites/tegud-blog
+      - curl -X POST http://cowbell.cowbell.default.tegud.work.:8080/${COWBELL_TOKEN}/upgrade/sites/tegud-blog
