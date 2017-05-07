@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    working_directory: /tmp/build
+    docker:
+      - image: tegud/circleci-nodejs-docker
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      # build and push Docker image
+      - run: |
+          npm i
+          TAG=$CIRCLE_BUILD_NUM
+          docker build -t tegud/tegud-blog:$TAG -t tegud/tegud-blog:latest .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push tegud/tegud-blog:$TAG
+          docker push tegud/tegud-blog:latest
