@@ -24,15 +24,6 @@ config = {
             },
             debug: false
         },
-        storage: {
-          active: 'ghost-s3',
-          'ghost-s3': {
-            accessKeyId: process.env.AWS_KEY,
-            secretAccessKey: process.env.AWS_SECRET,
-            bucket: process.env.AWS_BUCKET,
-            region: process.env.AWS_REGION
-          }
-        },
         server: {
             host: '0.0.0.0',
             port: '2368'
