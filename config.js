@@ -1,3 +1,4 @@
+
 var path = require('path'),
     config;
 
@@ -18,11 +19,14 @@ config = {
             }
         },
         database: {
-            client: 'sqlite3',
+            client: 'mysql',
             connection: {
-                filename: path.join(__dirname, '/content/data/ghost-dev.db')
-            },
-            debug: false
+                host     : 'mysql',
+                user     : 'GHOST_USER',
+                password : 'GHOST_PASSWORD',
+                database : 'GHOST_DB',
+                charset  : 'utf8'
+            }
         },
         server: {
             host: '0.0.0.0',
