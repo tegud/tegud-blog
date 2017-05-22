@@ -5,8 +5,9 @@ COPY config.js /config-example.js
 
 WORKDIR /usr/src/ghost/content/storage/ghost-s3
 
+RUN npm install lodash.assign
 
-RUN npm install lodash.assign 
+WORKDIR /usr/src/ghost/
 
 ENTRYPOINT ["/entrypoint.sh"]
 
