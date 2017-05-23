@@ -2,7 +2,7 @@ FROM tegud/docker-ghost-mysql-aws:latest
 
 COPY theme/ /usr/src/ghost/content/themes/tegud
 COPY config.js /config-example.js
-COPY storage.js /usr/src/ghost/content/storage/s3/src/index.js
+COPY storage.js /usr/src/ghost/content/storage/s3/index.js
 
 WORKDIR /usr/src/ghost/content/storage/s3
 
