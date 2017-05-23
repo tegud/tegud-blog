@@ -12,7 +12,7 @@ var _awsSdk = require('aws-sdk');
 
 var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
-var _base = require('../../../core/server/storage/base');
+var _base = require('/usr/src/ghost/core/server/storage/base.js');
 
 var _base2 = _interopRequireDefault(_base);
 
