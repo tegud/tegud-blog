@@ -1,70 +1,114 @@
-var errors = require('../errors'),
-    config = require('../config'),
-    Base = require('./base'),
-    _ = require('lodash'),
-    storage = {};
+import AWS from 'aws-sdk'
+import BaseStore from '/usr/src/ghost/core/server/storage/base'
+import { join } from 'path'
+import Promise, { promisify } from 'bluebird'
+import { readFile } from 'fs'
 
-/**
- * type: images|themes
- */
-function getStorage(type) {
-    type = type || 'images';
+const readFileAsync = promisify(readFile)
 
-    var storageChoice = config.storage.active[type],
-        storageConfig = config.storage[storageChoice];
+const stripLeadingSlash = s => s.indexOf('/') === 0 ? s.substring(1) : s
 
-    // CASE: type does not exist
-    if (!storageChoice) {
-        throw new errors.IncorrectUsage('No adapter found for type: ' + type);
+class Store extends BaseStore {
+  constructor (config = {}) {
+    super(config)
+
+    AWS.config.setPromisesDependency(Promise)
+
+    const {
+      accessKeyId,
+      assetHost,
+      bucket,
+      pathPrefix,
+      region,
+      secretAccessKey
+    } = config
+
+    this.accessKeyId = accessKeyId
+    this.bucket = bucket
+    this.host = assetHost || `https://s3${region === 'us-east-1' ? '' : `-${region}`}.amazonaws.com/${bucket}`
+    this.pathPrefix = stripLeadingSlash(pathPrefix || '')
+    this.region = region
+    this.secretAccessKey = secretAccessKey
+  }
+
+  delete (fileName, targetDir) {
+    const directory = targetDir || this.getTargetDir(this.pathPrefix)
+
+    return new Promise((resolve, reject) => {
+      return this.s3()
+        .deleteObject({
+          Bucket: this.bucket,
+          Key: stripLeadingSlash(join(directory, fileName))
+        })
+        .promise()
+        .then(() => resolve(true))
+        .catch(() => resolve(false))
+    })
+  }
+
+  exists (fileName) {
+    return new Promise((resolve, reject) => {
+      return this.s3()
+        .getObject({
+          Bucket: this.bucket,
+          Key: stripLeadingSlash(fileName)
+        })
+        .promise()
+        .then(() => resolve(true))
+        .catch(() => resolve(false))
+    })
+  }
+
+  s3 () {
+    return new AWS.S3({
+      accessKeyId: this.accessKeyId,
+      bucket: this.bucket,
+      region: this.region,
+      secretAccessKey: this.secretAccessKey
+    })
+  }
+
+  save (image, targetDir) {
+    const directory = targetDir || this.getTargetDir(this.pathPrefix)
+
+    return new Promise((resolve, reject) => {
+      Promise.all([
+        this.getUniqueFileName(this, image, directory),
+        readFileAsync(image.path)
+      ]).then(([ fileName, file ]) => (
+        this.s3()
+          .putObject({
+            ACL: 'public-read',
+            Body: file,
+            Bucket: this.bucket,
+            CacheControl: `max-age=${30 * 24 * 60 * 60}`,
+            ContentType: image.type,
+            Key: stripLeadingSlash(fileName)
+          })
+          .promise()
+          .then(() => resolve(`${this.host}/${fileName}`))
+      )).catch(error => reject(error))
+    })
+  }
+
+  serve () {
+    return (req, res, next) => {
+      this.s3()
+        .getObject({
+          Bucket: this.bucket,
+          Key: stripLeadingSlash(req.path)
+        }).on('httpHeaders', function (statusCode, headers, response) {
+          res.set(headers)
+        })
+            .createReadStream()
+            .on('error', function (err) {
+              res.status(404)
+              console.log(err + '\nkey: ' + stripLeadingSlash(req.path))
+              next()
+            })
+            .pipe(res)
     }
-
-    // cache?
-    if (storage[storageChoice]) {
-        return storage[storageChoice];
-    }
-
-    // CASE: load adapter from custom path  (.../content/storage)
-    try {
-        storage[storageChoice] = require(config.paths.storagePath.custom + storageChoice);
-    } catch (err) {
-        // CASE: only throw error if module does exist
-        if (err.code !== 'MODULE_NOT_FOUND') {
-            throw new errors.IncorrectUsage(err.message);
-        }
-        // CASE: if module not found it can be an error within the adapter (cannot find bluebird for example)
-        else if (err.code === 'MODULE_NOT_FOUND' && err.message.indexOf(config.paths.storagePath.custom + storageChoice) === -1) {
-            console.log(err.stack);
-            console.log(err.message);
-            throw new errors.IncorrectUsage(err.message);
-        }
-    }
-
-    // CASE: either storage[storageChoice] is already set or why check for in the default storage path
-    try {
-        storage[storageChoice] = storage[storageChoice] || require(config.paths.storagePath.default + storageChoice);
-    } catch (err) {
-        if (err.code === 'MODULE_NOT_FOUND') {
-            throw new errors.IncorrectUsage('We cannot find your adpter in: ' + config.paths.storagePath.custom + ' or: ' + config.paths.storagePath.default);
-        } else {
-            throw new errors.IncorrectUsage(err.message);
-        }
-    }
-
-    storage[storageChoice] = new storage[storageChoice](storageConfig);
-
-    if (!(storage[storageChoice] instanceof Base)) {
-        throw new errors.IncorrectUsage('Your storage adapter does not inherit from the Storage Base.');
-    }
-
-    if (!storage[storageChoice].requiredFns) {
-        throw new errors.IncorrectUsage('Your storage adapter does not provide the minimum required functions.');
-    }
-
-    if (_.xor(storage[storageChoice].requiredFns, Object.keys(_.pick(Object.getPrototypeOf(storage[storageChoice]), storage[storageChoice].requiredFns))).length) {
-        throw new errors.IncorrectUsage('Your storage adapter does not provide the minimum required functions.');
-    }
-
-    return storage[storageChoice];
+  }
 }
 
-module.exports.getStorage = getStorage;
+export default Store
