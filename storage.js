@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk'
-import BaseStore from '/usr/src/ghost/core/server/storage/base'
+import BaseStore from '../../../core/server/storage/base'
 import { join } from 'path'
 import Promise, { promisify } from 'bluebird'
 import { readFile } from 'fs'
