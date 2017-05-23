@@ -8,7 +8,7 @@ WORKDIR /usr/src/ghost/content/storage/s3
 RUN npm install aws-sdk \
     && chmod a+x /usr/src/ghost/core/server/storage \
     && chmod a+x /usr/src/ghost/core/server/storage/base.js \
-    && RUN chown -R root:root /usr/src/ghost/
+    && chown -R root:root /usr/src/ghost/
 
 WORKDIR /usr/src/ghost/
 
