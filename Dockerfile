@@ -5,7 +5,9 @@ COPY config.js /config-example.js
 
 WORKDIR /usr/src/ghost/content/storage/s3
 
-RUN npm install aws-sdk
+RUN npm install aws-sdk \
+    && chmod a+x /usr/src/ghost/core/server/storage \
+    && chmod a+x /usr/src/ghost/core/server/storage/base.js
 
 WORKDIR /usr/src/ghost/
 
