@@ -1,7 +1,3 @@
-FROM tegud/docker-ghost-mysql-aws:latest
+FROM tegud/docker-ghost-mysql-aws
 
-COPY theme/ /usr/src/ghost/content/themes/tegud
-
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["npm", "start", "--production"]
+COPY theme/ /var/lib/ghost/content.orig/themes/tegud
