@@ -13,6 +13,7 @@ jobs:
       - run: |
           npm i
           TAG=$CIRCLE_BUILD_NUM
-          docker build -t tegud/tegud-blog:v1 .
+          docker build -t tegud/tegud-blog:$TAG -t tegud/tegud-blog:latest .
           docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push tegud/tegud-blog:v1
+          docker push tegud/tegud-blog:$TAG
+          docker push tegud/tegud-blog:latest
