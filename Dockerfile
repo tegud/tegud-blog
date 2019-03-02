@@ -1,3 +1,3 @@
-FROM tegud/docker-ghost-mysql-aws:v1.25.4
+FROM tegud/docker-ghost-mysql-aws:v2.16.2
 
 COPY theme/ /var/lib/ghost/content.orig/themes/tegud
